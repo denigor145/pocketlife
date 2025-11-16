@@ -1,0 +1,535 @@
+/**
+ * Современный CSS Reset
+ * Обнуление стилей для кроссбраузерной совместимости и единообразия
+ */
+
+/* ===== Box sizing правила ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+/* ===== Удаление отступов и полей ===== */
+* {
+  margin: 0;
+  padding: 0;
+}
+
+/* ===== Удаление стандартных стилей списков ===== */
+ol,
+ul {
+  list-style: none;
+}
+
+/* ===== Удаление стандартных стилей ссылок ===== */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+/* ===== Удаление стандартных стилей кнопок ===== */
+button {
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* ===== Удаление стандартных стилей полей ввода ===== */
+input,
+textarea,
+select {
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+  outline: none;
+}
+
+/* ===== Удаление стандартных стилей таблиц ===== */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* ===== Удаление стандартных стилей изображений ===== */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* ===== Удаление стандартных стилей форм ===== */
+fieldset {
+  border: none;
+}
+
+legend {
+  display: table;
+  max-width: 100%;
+  white-space: normal;
+}
+
+/* ===== Удаление стандартных стилей прогресс-баров ===== */
+progress {
+  vertical-align: baseline;
+}
+
+/* ===== Удаление стандартных стилей деталей ===== */
+details {
+  display: block;
+}
+
+summary {
+  display: list-item;
+}
+
+/* ===== Удаление стандартных стилей шаблонов ===== */
+template {
+  display: none;
+}
+
+/* ===== Удаление стандартных стилей скрытых элементов ===== */
+[hidden] {
+  display: none !important;
+}
+
+/* ===== Удаление анимаций для людей, которые их предпочитают не использовать ===== */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ===== Удаление стандартных стилей для интерактивных элементов ===== */
+/* Убираем подсветку при тапе на мобильных устройствах */
+button,
+input,
+textarea,
+select,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== Удаление стандартных стилей для фокуса ===== */
+/* Убираем стандартный фокус, но оставляем доступность */
+:focus {
+  outline: none;
+}
+
+/* Кастомный фокус для доступности */
+:focus-visible {
+  outline: 2px solid var(--color-primary, #667eea);
+  outline-offset: 2px;
+}
+
+/* ===== Удаление стандартных стилей для полос прокрутки ===== */
+/* Для Webkit браузеров */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-gray-100, #f3f4f6);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-gray-400, #9ca3af);
+  border-radius: var(--radius-md, 4px);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-gray-500, #6b7280);
+}
+
+/* Для Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-gray-400, #9ca3af) var(--color-gray-100, #f3f4f6);
+}
+
+/* ===== Удаление стандартных стилей для выделения текста ===== */
+::selection {
+  background-color: rgba(var(--color-primary-rgb, 102, 126, 234), 0.2);
+  color: inherit;
+}
+
+::-moz-selection {
+  background-color: rgba(var(--color-primary-rgb, 102, 126, 234), 0.2);
+  color: inherit;
+}
+
+/* ===== Удаление стандартных стилей для автозаполнения ===== */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-white, #ffffff) inset !important;
+  -webkit-text-fill-color: var(--color-gray-900, #111827) !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Для темной темы */
+[data-theme="dark"] input:-webkit-autofill,
+[data-theme="dark"] input:-webkit-autofill:hover,
+[data-theme="dark"] input:-webkit-autofill:focus,
+[data-theme="dark"] input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 1000px var(--color-gray-800, #1f2937) inset !important;
+  -webkit-text-fill-color: var(--color-white, #ffffff) !important;
+}
+
+/* ===== Удаление стандартных стилей для number input ===== */
+/* Убираем стрелки в Webkit браузерах */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Убираем стрелки в Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+/* ===== Удаление стандартных стилей для search input ===== */
+/* Убираем крестик в Webkit браузерах */
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none;
+}
+
+/* ===== Удаление стандартных стилей для date input ===== */
+/* Убираем календарь в некоторых браузерах */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  position: absolute;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+/* ===== Удаление стандартных стилей для range input ===== */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+input[type="range"]::-webkit-slider-track {
+  background: var(--color-gray-200, #e5e7eb);
+  height: 4px;
+  border-radius: var(--radius-md, 4px);
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  background: var(--color-primary, #667eea);
+  height: 16px;
+  width: 16px;
+  border-radius: var(--radius-full, 50%);
+  cursor: pointer;
+}
+
+input[type="range"]::-moz-range-track {
+  background: var(--color-gray-200, #e5e7eb);
+  height: 4px;
+  border-radius: var(--radius-md, 4px);
+  border: none;
+}
+
+input[type="range"]::-moz-range-thumb {
+  background: var(--color-primary, #667eea);
+  height: 16px;
+  width: 16px;
+  border-radius: var(--radius-full, 50%);
+  cursor: pointer;
+  border: none;
+}
+
+/* ===== Удаление стандартных стилей для details/summary ===== */
+details > summary {
+  list-style: none;
+}
+
+details > summary::-webkit-details-marker {
+  display: none;
+}
+
+/* ===== Удаление стандартных стилей для dialog ===== */
+dialog {
+  border: none;
+  background: var(--color-white, #ffffff);
+  color: var(--color-gray-900, #111827);
+}
+
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.5);
+}
+
+/* ===== Базовые стили для HTML и Body ===== */
+html {
+  /* Устанавливаем базовый размер шрифта для rem */
+  font-size: 16px;
+  
+  /* Плавная прокрутка */
+  scroll-behavior: smooth;
+  
+  /* Предотвращение изменения размера текста при ориентации на iOS */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  /* Минимальная высота по viewport */
+  min-height: 100vh;
+  min-height: 100dvh; /* Динамический viewport height для мобильных */
+  
+  /* Базовые стили текста */
+  line-height: var(--line-height-normal, 1.5);
+  font-family: var(--font-family-primary, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif);
+  
+  /* Улучшение рендеринга текста */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeSpeed;
+  
+  /* Базовые цвета */
+  background-color: var(--color-background, #ffffff);
+  color: var(--color-text-primary, #111827);
+}
+
+/* ===== Базовые стили для типографики ===== */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: var(--font-weight-bold, 700);
+  line-height: var(--line-height-tight, 1.25);
+  text-wrap: balance; /* Балансировка текста для лучшей читаемости */
+}
+
+p {
+  text-wrap: pretty; /* Улучшение переноса текста */
+}
+
+/* ===== Базовые стили для интерактивных элементов ===== */
+/* Состояния кнопок */
+button:disabled,
+input:disabled,
+textarea:disabled,
+select:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Состояния ссылок */
+a:hover,
+a:focus {
+  text-decoration: underline;
+}
+
+/* ===== Базовые стили для скрытия элементов ===== */
+/* Скрытие для скринридеров */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Скрытие с сохранением layout */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ===== Базовые стили для контейнеров ===== */
+/* Ограничение максимальной ширины для читаемости */
+.readable-width {
+  max-width: 65ch; /* Оптимальная ширина для чтения */
+}
+
+/* ===== Базовые стили для изображений ===== */
+/* Предотвращение переполнения изображений */
+img {
+  max-inline-size: 100%;
+  block-size: auto;
+  object-fit: cover;
+}
+
+/* ===== Базовые стили для форм ===== */
+/* Консистентность между браузерами */
+input,
+textarea,
+select {
+  border: 1px solid var(--color-border, #d1d5db);
+  border-radius: var(--radius-md, 4px);
+  padding: var(--spacing-sm, 0.5rem);
+  background: var(--color-surface, #ffffff);
+  color: var(--color-text-primary, #111827);
+  width: 100%;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+  border-color: var(--color-primary, #667eea);
+  box-shadow: 0 0 0 3px rgba(var(--color-primary-rgb, 102, 126, 234), 0.1);
+}
+
+/* ===== Базовые стили для таблиц ===== */
+table {
+  width: 100%;
+}
+
+th,
+td {
+  padding: var(--spacing-sm, 0.5rem);
+  text-align: left;
+  border-bottom: 1px solid var(--color-border, #d1d5db);
+}
+
+th {
+  font-weight: var(--font-weight-semibold, 600);
+  background: var(--color-surface-alt, #f9fafb);
+}
+
+/* ===== Базовые стили для кода ===== */
+code,
+kbd,
+samp,
+pre {
+  font-family: var(--font-family-mono, 'SF Mono', Monaco, 'Inconsolata', monospace);
+  font-size: 0.875em;
+}
+
+code {
+  background: var(--color-surface-alt, #f9fafb);
+  padding: 0.125rem 0.25rem;
+  border-radius: var(--radius-sm, 2px);
+}
+
+pre {
+  background: var(--color-surface-alt, #f9fafb);
+  padding: var(--spacing-md, 1rem);
+  border-radius: var(--radius-md, 4px);
+  overflow-x: auto;
+}
+
+/* ===== Базовые стили для цитат ===== */
+blockquote {
+  border-left: 4px solid var(--color-primary, #667eea);
+  padding-left: var(--spacing-md, 1rem);
+  margin-left: 0;
+  font-style: italic;
+  color: var(--color-text-secondary, #374151);
+}
+
+/* ===== Базовые стили для горизонтальных линий ===== */
+hr {
+  border: none;
+  height: 1px;
+  background: var(--color-border, #d1d5db);
+  margin: var(--spacing-lg, 1.5rem) 0;
+}
+
+/* ===== Базовые стили для контейнера приложения ===== */
+#app {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Базовые стили для основного контента ===== */
+#main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ===== Базовые стили для утилитарных классов ===== */
+/* Быстрое скрытие */
+.hidden {
+  display: none !important;
+}
+
+/* Скрытие с сохранением пространства */
+.invisible {
+  visibility: hidden !important;
+}
+
+/* Полная прозрачность */
+.transparent {
+  opacity: 0 !important;
+}
+
+/* Отключение взаимодействия */
+.pointer-events-none {
+  pointer-events: none !important;
+}
+
+/* ===== Базовые стили для анимаций ===== */
+/* Плавные переходы для интерактивных элементов */
+button,
+input,
+textarea,
+select,
+a {
+  transition: all var(--duration-fast, 150ms) var(--ease-in-out, cubic-bezier(0.4, 0, 0.2, 1));
+}
+
+/* ===== Базовые стили для печати ===== */
+@media print {
+  *,
+  *::before,
+  *::after {
+    background: transparent !important;
+    color: black !important;
+    box-shadow: none !important;
+    text-shadow: none !important;
+  }
+  
+  a,
+  a:visited {
+    text-decoration: underline;
+  }
+  
+  img {
+    page-break-inside: avoid;
+  }
+  
+  p,
+  h2,
+  h3 {
+    orphans: 3;
+    widows: 3;
+  }
+  
+  h2,
+  h3 {
+    page-break-after: avoid;
+  }
+}
