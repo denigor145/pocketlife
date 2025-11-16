@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Экономический симулятор - Главное меню</title>
+    
+    <!-- Telegram Web App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    
+    <!-- Стили -->
+    <link rel="stylesheet" href="css/core/variables.css">
+    <link rel="stylesheet" href="css/core/reset.css">
+    <link rel="stylesheet" href="css/core/base.css">
+    <link rel="stylesheet" href="css/components/buttons.css">
+    <link rel="stylesheet" href="css/components/cards.css">
+    <link rel="stylesheet" href="css/components/notifications.css">
+    <link rel="stylesheet" href="css/layouts/main-menu.css">
+    
+    <!-- Предзагрузка ключевых ресурсов -->
+    <link rel="preload" href="js/core/game-engine.js" as="script">
+    <link rel="preload" href="js/core/navigation.js" as="script">
+</head>
+<body>
+    <div id="app">
+        <!-- Основной контент будет загружаться здесь -->
+        <div id="main-content">
+            <div class="main-menu-container">
+                <div class="menu-header">
+                    <div class="game-logo">
+                        <h1 class="game-title">💰 Экономический Симулятор</h1>
+                        <p class="game-subtitle">Стань мастером торговли!</p>
+                    </div>
+                    
+                    <!-- Статус игрока (если есть сохранение) -->
+                    <div class="player-status" id="playerStatus" style="display: none;">
+                        <div class="status-info">
+                            <span class="level-badge" id="playerLevel">Ур. 1</span>
+                            <span class="money-amount" id="playerMoney">100 ₽</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-actions">
+                    <button class="btn-primary btn-large" data-navigation="city_map" data-action="start-game">
+                        <span class="btn-icon">🎮</span>
+                        <span class="btn-text">Начать игру</span>
+                    </button>
+
+                    <button class="btn-secondary btn-large" data-navigation="skills" data-action="skills">
+                        <span class="btn-icon">🎯</span>
+                        <span class="btn-text">Умения</span>
+                    </button>
+
+                    <button class="btn-secondary btn-large" data-navigation="character" data-action="character">
+                        <span class="btn-icon">👤</span>
+                        <span class="btn-text">Персонаж</span>
+                    </button>
+
+                    <!-- Дополнительные опции -->
+                    <div class="menu-options">
+                        <button class="btn-tertiary" data-action="settings">
+                            <span class="btn-icon">⚙️</span>
+                            <span class="btn-text">Настройки</span>
+                        </button>
+
+                        <button class="btn-tertiary" data-action="load-game" id="loadGameBtn" style="display: none;">
+                            <span class="btn-icon">💾</span>
+                            <span class="btn-text">Загрузить игру</span>
+                        </button>
+
+                        <button class="btn-tertiary" data-action="achievements">
+                            <span class="btn-icon">🏆</span>
+                            <span class="btn-text">Достижения</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Быстрое продолжение (если есть активная сессия) -->
+                <div class="quick-resume" id="quickResume" style="display: none;">
+                    <div class="resume-card">
+                        <h3>Продолжить игру</h3>
+                        <p>Возвращайтесь к последней сессии</p>
+                        <button class="btn-continue" data-action="resume-game">
+                            <span class="btn-icon">↻</span>
+                            Продолжить
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Статистика игры -->
+                <div class="game-stats" id="gameStats">
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <span class="stat-value" id="totalPlayTime">0</span>
+                            <span class="stat-label">Время игры</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="battlesFought">0</span>
+                            <span class="stat-label">Сделки</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-value" id="moneyEarned">0</span>
+                            <span class="stat-label">Заработано</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Системные уведомления -->
+        <div id="notification-container" class="notification-container"></div>
+
+        <!-- Индикатор загрузки -->
+        <div id="navigation-loader" class="navigation-loader" style="display: none;">
+            <div class="loader-overlay">
+                <div class="loader-spinner"></div>
+                <div class="loader-text">Загрузка...</div>
+            </div>
+        </div>
+
+        <!-- Модальные окна -->
+        <div id="modal-container" class="modal-container"></div>
+    </div>
+
+    <!-- JavaScript модули -->
+    <script src="js/utils/helpers.js"></script>
+    <script src="js/utils/storage.js"></script>
+    
+    <!-- Данные игры -->
+    <script src="js/data/character.js"></script>
+    <script src="js/data/opponents-data.js"></script>
+    <script src="js/data/skills-data.js"></script>
+    <script src="js/data/items-data.js"></script>
+    
+    <!-- Основные системы -->
+    <script src="js/core/navigation.js"></script>
+    <script src="js/core/map-system.js"></script>
+    <script src="js/core/combat-system.js"></script>
+    <script src="js/core/game-engine.js"></script>
+    
+    <!-- Инициализация приложения -->
+    <script>
+        // Глобальные обработчики ошибок
+        window.addEventListener('error', function(event) {
+            console.error('Глобальная ошибка:', event.error);
+            if (window.helpers) {
+                window.helpers.showNotification('Произошла ошибка в приложении', 'error');
+            }
+        });
+
+        // Инициализация приложения после загрузки всех систем
+        document.addEventListener('DOMContentLoaded', async function() {
+            try {
+                console.log('Инициализация приложения...');
+                
+                // Проверка поддержки необходимых функций
+                if (!window.helpers || !window.storageSystem) {
+                    throw new Error('Не удалось загрузить основные системы');
+                }
+
+                // Инициализация игрового движка
+                if (window.gameEngine) {
+                    await window.gameEngine.init();
+                }
+
+                // Проверка существующих сохранений
+                await checkExistingSave();
+                
+                // Обновление интерфейса главного меню
+                updateMainMenu();
+
+                console.log('Приложение успешно инициализировано');
+
+            } catch (error) {
+                console.error('Ошибка инициализации приложения:', error);
+                showFatalError(error);
+            }
+        });
+
+        // Проверка существующих сохранений
+        async function checkExistingSave() {
+            if (window.storageSystem) {
+                const saveInfo = await window.storageSystem.getSaveInfo();
+                const loadBtn = document.getElementById('loadGameBtn');
+                const quickResume = document.getElementById('quickResume');
+                
+                if (saveInfo.saves.auto.exists) {
+                    loadBtn.style.display = 'block';
+                    quickResume.style.display = 'block';
+                }
+            }
+        }
+
+        // Обновление главного меню
+        function updateMainMenu() {
+            // Обновление статуса игрока
+            updatePlayerStatus();
+            
+            // Обновление статистики
+            updateGameStats();
+            
+            // Настройка обработчиков событий
+            setupEventListeners();
+        }
+
+        // Обновление статуса игрока
+        function updatePlayerStatus() {
+            if (window.characterSystem) {
+                const character = window.characterSystem.getCharacter();
+                const playerStatus = document.getElementById('playerStatus');
+                const playerLevel = document.getElementById('playerLevel');
+                const playerMoney = document.getElementById('playerMoney');
+                
+                if (character && character.level > 1) {
+                    playerLevel.textContent = `Ур. ${character.level}`;
+                    playerMoney.textContent = `${window.helpers.formatNumber(character.money)} ₽`;
+                    playerStatus.style.display = 'block';
+                }
+            }
+        }
+
+        // Обновление статистики игры
+        function updateGameStats() {
+            if (window.gameEngine) {
+                const stats = window.gameEngine.statistics;
+                const totalPlayTime = document.getElementById('totalPlayTime');
+                const battlesFought = document.getElementById('battlesFought');
+                const moneyEarned = document.getElementById('moneyEarned');
+                
+                if (stats.totalPlayTime > 0) {
+                    totalPlayTime.textContent = window.helpers.formatDuration(stats.totalPlayTime);
+                    battlesFought.textContent = window.helpers.formatNumber(stats.battlesFought);
+                    moneyEarned.textContent = window.helpers.formatNumber(stats.moneyEarned);
+                }
+            }
+        }
+
+        // Настройка обработчиков событий
+        function setupEventListeners() {
+            // Обработка кнопок меню
+            document.addEventListener('click', function(event) {
+                const button = event.target.closest('button[data-action]');
+                if (button) {
+                    const action = button.getAttribute('data-action');
+                    handleMenuAction(action);
+                }
+            });
+
+            // Обработка навигационных ссылок
+            document.addEventListener('click', function(event) {
+                const link = event.target.closest('[data-navigation]');
+                if (link && window.navigation) {
+                    event.preventDefault();
+                    const route = link.getAttribute('data-navigation');
+                    window.navigation.navigateTo(route);
+                }
+            });
+        }
+
+        // Обработка действий меню
+        function handleMenuAction(action) {
+            switch (action) {
+                case 'start-game':
+                    startNewGame();
+                    break;
+                case 'load-game':
+                    loadGame();
+                    break;
+                case 'resume-game':
+                    resumeGame();
+                    break;
+                case 'settings':
+                    showSettings();
+                    break;
+                case 'achievements':
+                    showAchievements();
+                    break;
+            }
+        }
+
+        // Начать новую игру
+        function startNewGame() {
+            if (window.characterSystem && window.characterSystem.getCharacter().level > 1) {
+                showConfirmationModal(
+                    'Начать новую игру?',
+                    'Текущий прогресс будет потерян.',
+                    () => {
+                        window.characterSystem.resetCharacter();
+                        window.gameEngine.resetProgress();
+                        window.navigation.navigateTo('city_map');
+                    }
+                );
+            } else {
+                window.navigation.navigateTo('city_map');
+            }
+        }
+
+        // Загрузить игру
+        async function loadGame() {
+            if (window.storageSystem) {
+                const result = await window.storageSystem.loadGame();
+                if (result.success) {
+                    window.helpers.showNotification('Игра загружена', 'success');
+                    updateMainMenu();
+                } else {
+                    window.helpers.showNotification('Ошибка загрузки', 'error');
+                }
+            }
+        }
+
+        // Продолжить игру
+        function resumeGame() {
+            if (window.mapSystem && window.mapSystem.getCurrentLocation()) {
+                const location = window.mapSystem.getCurrentLocation();
+                window.navigation.navigateTo('game', {
+                    location: location.id,
+                    map: window.mapSystem.getCurrentMap().id
+                });
+            } else {
+                window.navigation.navigateTo('city_map');
+            }
+        }
+
+        // Показать настройки
+        function showSettings() {
+            // Временная реализация - будет заменена на модальное окно
+            window.helpers.showNotification('Раздел настроек в разработке', 'info');
+        }
+
+        // Показать достижения
+        function showAchievements() {
+            // Временная реализация - будет заменена на модальное окно
+            window.helpers.showNotification('Раздел достижений в разработке', 'info');
+        }
+
+        // Показать модальное окно подтверждения
+        function showConfirmationModal(title, message, onConfirm) {
+            const modal = document.createElement('div');
+            modal.className = 'modal-overlay';
+            modal.innerHTML = `
+                <div class="modal-content">
+                    <h3>${title}</h3>
+                    <p>${message}</p>
+                    <div class="modal-actions">
+                        <button class="btn-secondary" data-action="cancel">Отмена</button>
+                        <button class="btn-primary" data-action="confirm">Подтвердить</button>
+                    </div>
+                </div>
+            `;
+            
+            document.getElementById('modal-container').appendChild(modal);
+            
+            // Обработчики событий модального окна
+            modal.querySelector('[data-action="cancel"]').onclick = () => modal.remove();
+            modal.querySelector('[data-action="confirm"]').onclick = () => {
+                modal.remove();
+                onConfirm();
+            };
+            
+            // Закрытие по клику вне модального окна
+            modal.onclick = (e) => {
+                if (e.target === modal) modal.remove();
+            };
+        }
+
+        // Показать фатальную ошибку
+        function showFatalError(error) {
+            const errorHtml = `
+                <div class="fatal-error">
+                    <div class="error-icon">💥</div>
+                    <h2>Критическая ошибка</h2>
+                    <p>Не удалось запустить приложение</p>
+                    <p><small>${error.message}</small></p>
+                    <button onclick="location.reload()" class="btn-primary">Перезагрузить</button>
+                </div>
+            `;
+            
+            document.getElementById('main-content').innerHTML = errorHtml;
+        }
+
+        // Интеграция с Telegram Web App
+        if (window.Telegram && window.Telegram.WebApp) {
+            const tg = window.Telegram.WebApp;
+            
+            // Расширить на весь экран
+            tg.expand();
+            
+            // Настроить кнопку назад
+            tg.BackButton.onClick(() => {
+                if (window.navigation) {
+                    window.navigation.goBack();
+                }
+            });
+            
+            // Показать кнопку назад если не на главной странице
+            tg.BackButton.show();
+        }
+    </script>
+</body>
+</html>
